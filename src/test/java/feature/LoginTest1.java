@@ -24,6 +24,7 @@ public class LoginTest1 {
         // Mở trang web
         driver.get("https://www.saucedemo.com/");
         Thread.sleep(5000);
+        Thread.sleep(5000);
 
         // Nhập thông tin đăng nhập
         WebElement usernameInput = driver.findElement(By.id("user-name"));
