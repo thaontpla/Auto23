@@ -27,6 +27,13 @@ public class DemoOrganizeTest {
         String currentUrl = driver.getCurrentUrl();
         Assert.assertEquals(currentUrl, "https://www.saucedemo.com/inventory.html");
     }
+    @Test
+    public void testLogin_v1() {
+        loginTask.with("standard_user", "secret_sauce");
+        //expect sau khi login thanh cong
+        String currentUrl = driver.getCurrentUrl();
+        Assert.assertEquals(currentUrl, "https://www.saucedemo.com/inventory.html");
+    }
 
     @AfterClass
     public void tearDown() {
