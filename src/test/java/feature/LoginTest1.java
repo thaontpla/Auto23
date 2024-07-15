@@ -25,6 +25,7 @@ public class LoginTest1 {
         driver.get("https://www.saucedemo.com/");
         Thread.sleep(5000);
         Thread.sleep(5000);
+
         Thread.sleep(5000);
 
         // Nhập thông tin đăng nhập
