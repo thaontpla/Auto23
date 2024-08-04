@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BtvnD5 {
@@ -30,11 +31,12 @@ public class BtvnD5 {
 
     @BeforeClass
     public void setUp() {
-        // Khởi tạo WebDriver (trình duyệt Chrome)
         driver = new ChromeDriver();
         driver.manage().window().maximize();
+
+
         try {
-            FileInputStream file = new FileInputStream("Bookkk.xlsx");
+            FileInputStream file = new FileInputStream("Book1.xlsx");
             Workbook workbook = new XSSFWorkbook(file);
             Sheet sheetAccount = workbook.getSheetAt(0);
             Sheet sheetProduct = workbook.getSheetAt(1);
@@ -62,19 +64,25 @@ public class BtvnD5 {
     public void testLogin()throws InterruptedException {
 // Mở trang web
             driver.get("https://saucelabs.com/request-demo");
-            Thread.sleep(2000);
+            Thread.sleep(5000);
 
+            WebElement signInButton = driver.findElement(By.xpath(signInButtonXpath));
+            signInButton.click();
 
+            // Chuyển sang cửa sổ mới được mở ra
+            ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+            driver.switchTo().window(tabs.get(1));
+
+            // Nhập thông tin đăng nhập ở cửa sổ mới
             WebElement userName = driver.findElement(By.xpath(userNameXpath));
             userName.sendKeys(user);
 
             WebElement passWord = driver.findElement(By.xpath(passwordXpath));
             passWord.sendKeys(pass);
 
-            Thread.sleep(3000);
-
-            WebElement login = driver.findElement(By.xpath(signInButtonXpath));
-            login.click();
+            // Click nút đăng nhập (nếu có)
+            WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
+            loginButton.click();
 
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
     }
