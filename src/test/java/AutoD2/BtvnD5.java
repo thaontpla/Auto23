@@ -23,12 +23,9 @@ import java.util.List;
 
 public class BtvnD5 {
     public WebDriver driver;
-    String user;
-    String pass;
-    String signInButtonXpath;
-    String userNameXpath;
-    String passwordXpath;
-
+    List<String> information;
+    List<String> locators;
+    
     @BeforeClass
     public void setUp() {
         driver = new ChromeDriver();
@@ -38,24 +35,26 @@ public class BtvnD5 {
         try {
             FileInputStream file = new FileInputStream("Book1.xlsx");
             Workbook workbook = new XSSFWorkbook(file);
-            Sheet sheetAccount = workbook.getSheetAt(0);
-            Sheet sheetProduct = workbook.getSheetAt(1);
+            Sheet sheetInformation = workbook.getSheetAt(0);
+            Sheet sheetLocator = workbook.getSheetAt(1);
             DataFormatter dataFormatter = new DataFormatter();
 
+            // Read information from sheet 1
+            information = new ArrayList<>();
+            for (Row row : sheetInformation) {
+                information.add(dataFormatter.formatCellValue(row.getCell(1)));
+            }
 
-            user = dataFormatter.formatCellValue(sheetAccount.getRow(0).getCell(1));
-            pass = dataFormatter.formatCellValue(sheetAccount.getRow(1).getCell(1));
-
-            signInButtonXpath = dataFormatter.formatCellValue(sheetProduct.getRow(1).getCell(1));
-            userNameXpath = dataFormatter.formatCellValue(sheetProduct.getRow(2).getCell(1));
-            passwordXpath = dataFormatter.formatCellValue(sheetProduct.getRow(3).getCell(1));
-
+            // Read locators from sheet 2
+            locators = new ArrayList<>();
+            for (Row row : sheetLocator) {
+                locators.add(dataFormatter.formatCellValue(row.getCell(1)));
+            }
 
             workbook.close();
             file.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
-
         }
 
     }
@@ -66,23 +65,31 @@ public class BtvnD5 {
             driver.get("https://saucelabs.com/request-demo");
             Thread.sleep(5000);
 
-            WebElement signInButton = driver.findElement(By.xpath(signInButtonXpath));
-            signInButton.click();
+            for (int i = 0; i < locators.size(); i++) {
+                WebElement element = driver.findElement(By.xpath(locators.get(i)));
+                element.sendKeys(information.get(i));
+            }
 
-            // Chuyển sang cửa sổ mới được mở ra
-            ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
-            driver.switchTo().window(tabs.get(1));
 
-            // Nhập thông tin đăng nhập ở cửa sổ mới
-            WebElement userName = driver.findElement(By.xpath(userNameXpath));
-            userName.sendKeys(user);
+            WebElement country = driver.findElement(By.xpath("//select[@name='Country']"));
+            country.click();
+            WebElement selectCountry = driver.findElement(By.xpath("//option[text()='Japan']"));
+            selectCountry.click();
+            Thread.sleep(1000);
 
-            WebElement passWord = driver.findElement(By.xpath(passwordXpath));
-            passWord.sendKeys(pass);
+            WebElement interest = driver.findElement(By.xpath("//select[@name='Solution_Interest__c']"));
+            interest.click();
+            WebElement selectInterest = driver.findElement(By.xpath("//option[text()='Mobile Application Testing ']"));
+            selectInterest.click();
+            Thread.sleep(3000);
 
-            // Click nút đăng nhập (nếu có)
-            WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
-            loginButton.click();
+            WebElement selectCheckBox = driver.findElement(By.xpath("//input[@id='mktoCheckbox_42368_0']"));
+            selectCheckBox.click();
+            Thread.sleep(3000);
+
+            WebElement submitButton = driver.findElement(By.xpath("//button[@type='submit']"));
+            submitButton.click();
+            Thread.sleep(1000);
 
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
     }
@@ -97,5 +104,26 @@ public class BtvnD5 {
 
 
 
+
+
+
+
+//            WebElement signInButton = driver.findElement(By.);
+//            signInButton.click();
+//
+//            // Chuyển sang cửa sổ mới được mở ra
+//            ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+//            driver.switchTo().window(tabs.get(1));
+//
+//            // Nhập thông tin đăng nhập ở cửa sổ mới
+//            WebElement userName = driver.findElement(By.xpath(userNameXpath));
+//            userName.sendKeys(user);
+//
+//            WebElement passWord = driver.findElement(By.xpath(passwordXpath));
+//            passWord.sendKeys(pass);
+//
+//            // Click nút đăng nhập (nếu có)
+//            WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
+//            loginButton.click();
 
 
